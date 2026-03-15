@@ -21,3 +21,5 @@ Get into calibration pose (L-shape arms)
 Press Y — policy starts, robot is still floating but policy is now active
 NOW press 9 in MuJoCo — robot drops, policy catches it and stabilizes
 Rule: Always press Y before 9. Policy must be running first, then drop.
+
+

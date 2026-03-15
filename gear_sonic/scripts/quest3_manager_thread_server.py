@@ -82,7 +82,7 @@ class Quest3PlannerStreamer:
         )
 
         self.dt = 1.0 / max(1, poll_hz)
-        self.mode = LocomotionMode.IDLE
+        self.mode = LocomotionMode.WALK
         self.prev_ab = False
         self.prev_xy = False
         self.prev_a = False
