@@ -1,0 +1,64 @@
+overlay_name: g1-teleop
+overlay_version: 2
+
+upstream:
+  remote_name: upstream
+  remote_url: https://github.com/NVlabs/GR00T-WholeBodyControl.git
+  tracked_branch: main
+  pinned_ref: c3562ef
+
+overlay_root: overlay_files
+
+team_owned_files:
+  - overlay_files/run_quest3_server.sh
+  - overlay_files/REAL_ROBOT_SETUP.md
+  - overlay_files/install_scripts/install_quest3.sh
+  - overlay_files/gear_sonic/scripts/quest3_manager_thread_server.py
+  - overlay_files/gear_sonic/utils/teleop/vr/quest3_reader.py
+  - overlay_files/gear_sonic_deploy/deploy.sh
+  - overlay_files/docs/source/index.rst
+  - overlay_files/docs/source/getting_started/installation_deploy.md
+  - overlay_files/docs/source/getting_started/quickstart.md
+  - overlay_files/docs/source/user_guide/teleoperation.md
+  - overlay_files/docs/source/user_guide/mac_cloud_runtime.md
+  - runtime_profiles/LOCAL_MAC.env
+  - runtime_profiles/CLOUD_SIM.env
+  - scripts/rehydrate_workspace.sh
+  - scripts/export_team_overlay.sh
+
+runtime_contract:
+  quest_manager:
+    protocol: zmq
+    bind_port: 5556
+    topics:
+      - command
+      - planner
+      - pose
+  deploy_input:
+    protocol: zmq
+    host_flag: --zmq-host
+    port_flag: --zmq-port
+    default_port: 5556
+  deploy_debug:
+    protocol: zmq
+    port_flag: --zmq-out-port
+    default_port: 5557
+  sim_transport:
+    mode: local_dds_only
+    topics:
+      - rt/lowcmd
+      - rt/lowstate
+      - rt/secondary_imu
+      - rt/odostate
+
+required_artifacts:
+  - gear_sonic_deploy/policy/release/model_encoder.onnx
+  - gear_sonic_deploy/policy/release/model_decoder.onnx
+  - gear_sonic_deploy/policy/release/observation_config.yaml
+  - gear_sonic_deploy/planner/target_vel/V2/planner_sonic.onnx
+  - gear_sonic_deploy/reference/example/
+
+notes:
+  - This repo is intentionally not self-contained.
+  - Rehydrate into a fresh workspace before running code.
+  - Keep MuJoCo simulation and C++ deploy on the same workstation or cloud VM for v1.

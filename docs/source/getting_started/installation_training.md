@@ -1,3 +1,0 @@
-# Installation (Training)
-
-Coming soon! 

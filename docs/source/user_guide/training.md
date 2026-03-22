@@ -1,3 +1,0 @@
-# Training Guide
-
-Coming soon...
