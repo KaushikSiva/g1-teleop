@@ -12,7 +12,11 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 ARCH="$(uname -m)"
+OS="$(uname -s)"
+INSTALL_MODE="${QUEST3_INSTALL_MODE:-teleop}"
 echo "[OK] Architecture: $ARCH"
+echo "[OK] OS: $OS"
+echo "[OK] Quest 3 install mode: $INSTALL_MODE"
 
 # ── 1. Ensure uv is installed ────────────────────────────────────────────────
 if ! command -v uv &>/dev/null; then
@@ -77,15 +81,24 @@ else
     echo "[OK] TLS certificate already exists: $CERT_FILE"
 fi
 
-# ── 6. sim extra + unitree_sdk2_python (desktop only) ─────────────────────────
-if [ "$ARCH" = "aarch64" ] && [ "$(whoami)" = "unitree" ]; then
-    echo "[SKIP] Skipping sim extra & unitree_sdk2_python (onboard Jetson Orin)"
-else
-    echo "[INFO] Installing sim extra …"
-    uv pip install -e "gear_sonic[sim]"
+# ── 6. Optional full install for Linux workstation / sim hosts ───────────────
+if [ "$INSTALL_MODE" = "full" ]; then
+    if [ "$ARCH" = "aarch64" ] && [ "$(whoami)" = "unitree" ]; then
+        echo "[SKIP] Skipping sim extra & unitree_sdk2_python (onboard Jetson Orin)"
+    elif [ "$OS" != "Linux" ]; then
+        echo "[WARN] QUEST3_INSTALL_MODE=full requested on non-Linux host."
+        echo "[WARN] Skipping sim/unitree extras because the Mac path is intended to run teleop only."
+    else
+        echo "[INFO] Installing sim extra …"
+        uv pip install -e "gear_sonic[sim]"
 
-    echo "[INFO] Installing unitree_sdk2_python …"
-    uv pip install -e external_dependencies/unitree_sdk2_python
+        echo "[INFO] Installing unitree_sdk2_python …"
+        uv pip install -e external_dependencies/unitree_sdk2_python
+    fi
+else
+    echo "[INFO] Teleop-only install selected."
+    echo "[INFO] Skipping MuJoCo sim and unitree_sdk2_python dependencies."
+    echo "[INFO] Use QUEST3_INSTALL_MODE=full on a Linux workstation if you also want the full sim stack."
 fi
 
 echo ""
@@ -97,6 +110,9 @@ echo "    source .venv_teleop/bin/activate"
 echo ""
 echo "  Run the Quest 3 manager:"
 echo "    bash run_quest3_server.sh"
+echo ""
+echo "  For Linux full install:"
+echo "    QUEST3_INSTALL_MODE=full bash install_scripts/install_quest3.sh"
 echo ""
 echo "  Then open https://<workstation-ip>:8443 in the Quest 3"
 echo "  browser to connect."

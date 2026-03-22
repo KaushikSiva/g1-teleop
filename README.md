@@ -28,6 +28,8 @@ chmod +x scripts/rehydrate_workspace.sh
 scripts/rehydrate_workspace.sh ../g1-teleop-workspace
 ```
 
+If `git-lfs` is installed, the script also runs `git lfs pull` automatically. If not, install `git-lfs` and run `git lfs pull` manually later inside the rehydrated workspace.
+
 After that, your runnable workspace will be:
 
 ```bash
@@ -53,6 +55,8 @@ bash install_scripts/install_quest3.sh
 source runtime_profiles/LOCAL_MAC.env
 bash run_quest3_server.sh
 ```
+
+`install_quest3.sh` defaults to a **teleop-only** install on the Mac. It does not try to install MuJoCo sim or Unitree SDK dependencies there.
 
 This prints your Mac IP and the Quest browser URL, usually:
 
@@ -83,6 +87,12 @@ cd ../g1-teleop-workspace
 ```
 
 Install whatever NVIDIA upstream requires on that machine, then run:
+
+If the cloud machine should also install the Quest teleop stack, use:
+
+```bash
+QUEST3_INSTALL_MODE=full bash install_scripts/install_quest3.sh
+```
 
 Terminal 1:
 ```bash
@@ -137,6 +147,12 @@ cd ../g1-teleop-workspace
 
 ```bash
 bash install_scripts/install_quest3.sh
+```
+
+If this workstation also needs the full sim stack, use:
+
+```bash
+QUEST3_INSTALL_MODE=full bash install_scripts/install_quest3.sh
 ```
 
 ### B3. On the robot workstation: run deploy

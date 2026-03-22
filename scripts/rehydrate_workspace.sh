@@ -18,6 +18,7 @@ if [[ ! -d "$OVERLAY_ROOT" ]]; then
 fi
 
 TARGET_DIR="${1:-$REPO_ROOT/../g1-teleop-workspace}"
+LFS_MODE="${LFS_MODE:-auto}"
 
 UPSTREAM_URL="$(awk '/remote_url:/ {print $2}' "$MANIFEST")"
 PINNED_REF="$(awk '/pinned_ref:/ {print $2}' "$MANIFEST")"
@@ -38,6 +39,16 @@ git clone "$UPSTREAM_URL" "$TARGET_DIR"
 cd "$TARGET_DIR"
 git checkout "$PINNED_REF"
 
+if command -v git-lfs >/dev/null 2>&1; then
+    if [[ "$LFS_MODE" != "skip" ]]; then
+        echo "Fetching Git LFS assets"
+        git lfs pull
+    fi
+else
+    echo "git-lfs not found; skipping LFS fetch"
+    echo "Install git-lfs and run 'git lfs pull' inside $TARGET_DIR if models/assets are missing"
+fi
+
 echo "Applying overlay files"
 cp -R "$OVERLAY_ROOT"/. "$TARGET_DIR"/
 cp -R "$REPO_ROOT/runtime_profiles" "$TARGET_DIR/runtime_profiles"
@@ -50,15 +61,11 @@ Workspace ready: $TARGET_DIR
 
 Next steps:
 
-1. Fetch large files if needed:
-   cd "$TARGET_DIR"
-   git lfs pull
-
-2. Mac host:
+1. Mac host:
    source runtime_profiles/LOCAL_MAC.env
    bash run_quest3_server.sh
 
-3. Cloud host:
+2. Cloud host:
    source runtime_profiles/CLOUD_SIM.env
    export QUEST3_ZMQ_HOST=<mac-lan-ip>
    cd gear_sonic_deploy
