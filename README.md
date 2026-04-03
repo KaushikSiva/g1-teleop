@@ -1,5 +1,7 @@
 # `g1-teleop`
 
+[![Demo Video 1](https://img.youtube.com/vi/C3LIbuVZzXM/hqdefault.jpg)](https://youtu.be/C3LIbuVZzXM)
+
 This repo is a **small overlay repo** for Quest 3 teleoperation on top of NVIDIA `GR00T-WholeBodyControl`.
 
 This repo is **not** a runnable full workspace by itself. First rehydrate a workspace from NVIDIA upstream, then run from that rehydrated workspace.
