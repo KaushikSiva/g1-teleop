@@ -2,7 +2,7 @@
 
 [![Demo Video 1](https://img.youtube.com/vi/C3LIbuVZzXM/hqdefault.jpg)](https://youtu.be/C3LIbuVZzXM)
 
-^ ### youtube video demo
+### youtube video demo ^
 
 This repo is a **small overlay repo** for Quest 3 teleoperation on top of NVIDIA `GR00T-WholeBodyControl`.
 
